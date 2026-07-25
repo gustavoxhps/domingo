@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Domingo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="min-h-screen text-cyan-100 relative overflow-x-hidden" style="background:#020617">
+
+  <!-- Background layers -->
+  <div id="starfield" class="absolute inset-0 pointer-events-none"></div>
+  <div class="absolute inset-0 grid-bg opacity-20 pointer-events-none"></div>
+  <div class="absolute inset-0 scanline pointer-events-none opacity-70"></div>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="relative z-30 h-[70px]">
+    <div class="absolute inset-x-0 bottom-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(34,211,238,.4),transparent)"></div>
+
+    <!-- Logo -->
+    <div class="absolute left-1/2 -top-1 -translate-x-1/2">
+      <div class="relative">
+        <div class="logo-pill px-4 sm:px-10 pt-3 sm:pt-4 pb-2 sm:pb-3 border border-cyan-400/50 border-t-0 flex items-center gap-2 sm:gap-3">
+          <span class="font-orbitron text-lg sm:text-[26px] font-semibold tracking-widest text-cyan-300 glow-cyan leading-none">Domingo</span>
+          <span class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-tech tracking-widest border border-cyan-500/60 text-cyan-300 rounded">beta v1.0.1</span>
+        </div>
+        <div class="logo-underline"></div>
+      </div>
+    </div>
+
+    <!-- Right controls -->
+    <div class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 flex items-center gap-2 sm:gap-3">
+      <button id="onlineToggle" class="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-orbitron tracking-widest mr-0 sm:mr-1" title="Alternar Online/Offline">
+        <span id="onlineDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" style="box-shadow:0 0 10px rgba(52,211,153,.9)"></span>
+        <span id="onlineText" class="hidden sm:inline text-emerald-300">ONLINE</span>
+      </button>
+      <button id="audioToggle" class="icon-btn on" title="Silenciar áudio">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      </button>
+      <button id="micToggle" class="icon-btn on" title="Desativar microfone">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      </button>
+      <button class="icon-btn on cursor-default" title="Configurações">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="relative z-10 flex px-2 sm:px-4 pb-24 gap-3" style="min-height:calc(100vh - 70px - 72px)">
+
+    <!-- Mobile backdrop -->
+    <div id="mobileBackdrop" class="hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
+
+    <!-- LEFT PANEL -->
+    <div id="leftPanelWrap" class="flex-shrink-0">
+      <button id="leftMobileClose" class="hidden absolute top-2 right-2 w-8 h-8 border border-cyan-500/40 rounded flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10 z-10" aria-label="Fechar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="w-full sm:w-[280px] flex flex-col gap-3 h-full pr-1">
+        <div class="flex items-center justify-between px-1">
+          <span class="font-tech text-[11px] tracking-[0.3em] text-cyan-400/80">PAINÉIS</span>
+          <button id="hideLeft" class="px-2 py-1 border border-cyan-500/40 rounded text-[10px] font-tech tracking-widest text-cyan-300 hover:bg-cyan-400/10 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+            OCULTAR
+          </button>
+        </div>
+
+        <div class="panel panel-corners p-3 relative">
+          <span class="c-tl"></span><span class="c-br"></span>
+          <div class="font-tech text-[10px] text-cyan-500/80 tracking-widest mb-2">NÚCLEO NEURAL</div>
+          <div id="miniOrb" class="relative w-full h-[140px] flex items-center justify-center"></div>
+          <div id="miniOrbLabel" class="text-center font-orbitron text-xs tracking-[0.3em] mt-1">AGUARDANDO</div>
+        </div>
+
+        <div class="panel panel-corners p-3 relative">
+          <span class="c-tl"></span><span class="c-br"></span>
+          <div class="font-tech text-[10px] text-cyan-500/80 tracking-widest mb-2">SISTEMA TEMPORAL</div>
+          <div class="text-center py-1">
+            <div id="clockTime" class="font-orbitron text-4xl font-bold tracking-widest text-cyan-300 glow-cyan">00:00:00</div>
+            <div id="clockDate" class="font-tech text-[10px] tracking-widest text-cyan-500/80 mt-1 capitalize"></div>
+          </div>
+        </div>
+
+        <div class="panel panel-corners p-3 relative">
+          <span class="c-tl"></span><span class="c-br"></span>
+          <div class="font-tech text-[10px] text-cyan-500/80 tracking-widest mb-2">DESEMPENHO</div>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between font-tech text-[10px] mb-1"><span class="text-cyan-400/80 tracking-widest">CPU NEURAL</span><span id="cpuVal" class="text-cyan-100">42%</span></div>
+              <div class="h-1.5 bg-cyan-500/10 rounded-full overflow-hidden"><div id="cpuBar" class="h-full rounded-full transition-all duration-500" style="width:42%;background:#22d3ee;box-shadow:0 0 8px #22d3ee"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between font-tech text-[10px] mb-1"><span class="text-cyan-400/80 tracking-widest">MEMÓRIA</span><span id="memVal" class="text-cyan-100">68%</span></div>
+              <div class="h-1.5 bg-cyan-500/10 rounded-full overflow-hidden"><div id="memBar" class="h-full rounded-full transition-all duration-500" style="width:68%;background:#22d3ee;box-shadow:0 0 8px #22d3ee"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between font-tech text-[10px] mb-1"><span class="text-cyan-400/80 tracking-widest">LATÊNCIA</span><span id="latVal" class="text-cyan-100">210ms</span></div>
+              <div class="h-1.5 bg-cyan-500/10 rounded-full overflow-hidden"><div id="latBar" class="h-full rounded-full transition-all duration-500" style="width:44%;background:#22d3ee;box-shadow:0 0 8px #22d3ee"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-corners p-3 relative">
+          <span class="c-tl"></span><span class="c-br"></span>
+          <div class="font-tech text-[10px] text-cyan-500/80 tracking-widest mb-2">SISTEMAS</div>
+          <div id="systemsList" class="space-y-1.5"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Restore Left tab -->
+    <button id="restoreLeft" class="hidden fixed left-0 top-1/2 -translate-y-1/2 z-30 border border-cyan-400/50 border-l-0 rounded-r-md bg-[#050c1a]/80 backdrop-blur px-2 py-4 hover:bg-cyan-400/10 transition-colors" title="Mostrar painéis">
+      <div class="flex flex-col items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+        <span class="font-tech text-[10px] tracking-widest text-cyan-300 vert-rl-r">PAINEL</span>
+      </div>
+    </button>
+
+    <!-- CENTER -->
+    <section class="flex-1 flex flex-col items-center justify-center relative min-w-0">
+      <div id="orbHost"></div>
+      <div id="stateLabel" class="mt-4 font-orbitron tracking-[0.4em] text-sm text-cyan-300 glow-cyan">TOQUE PARA FALAR</div>
+      <div id="waveHost" class="w-full flex justify-center mt-4 pointer-events-none"></div>
+    </section>
+
+    <!-- RIGHT PANEL -->
+    <div id="rightPanelWrap" class="flex-shrink-0">
+      <button id="rightMobileClose" class="hidden absolute top-2 left-2 w-8 h-8 border border-cyan-500/40 rounded flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10 z-10" aria-label="Fechar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="w-full sm:w-[280px] flex flex-col gap-3 h-full pl-1">
+        <div class="flex items-center justify-between px-1">
+          <span class="font-tech text-[11px] tracking-[0.3em] text-cyan-400/80">LOG DO SISTEMA</span>
+          <button id="hideRight" class="px-2 py-1 border border-cyan-500/40 rounded text-[10px] font-tech tracking-widest text-cyan-300 hover:bg-cyan-400/10 flex items-center gap-1">
+            OCULTAR
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+          </button>
+        </div>
+        <div class="panel panel-corners p-3 relative flex-1 overflow-hidden flex flex-col">
+          <span class="c-tl"></span><span class="c-br"></span>
+          <div id="logList" class="flex-1 overflow-y-auto pr-1 space-y-1"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Restore Right tab -->
+    <button id="restoreRight" class="hidden fixed right-0 top-1/2 -translate-y-1/2 z-30 border border-cyan-400/50 border-r-0 rounded-l-md bg-[#050c1a]/80 backdrop-blur px-2 py-4 hover:bg-cyan-400/10 transition-colors" title="Mostrar log">
+      <div class="flex flex-col items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+        <span class="font-tech text-[10px] tracking-widest text-cyan-300 vert-rl">LOG</span>
+      </div>
+    </button>
+  </main>
+
+  <!-- ===== BOTTOM INPUT ===== -->
+  <form id="cmdForm" class="fixed bottom-0 left-0 right-0 z-20 px-2 sm:px-4 pb-3 pt-2">
+    <div class="max-w-[1400px] mx-auto panel panel-corners px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 relative">
+      <span class="c-tl"></span><span class="c-br"></span>
+      <input id="cmdInput" type="text" placeholder="Digite se preferir..." class="flex-1 min-w-0 bg-transparent outline-none font-tech text-cyan-100 placeholder-cyan-500/50 tracking-wide disabled:opacity-40 py-1.5 text-sm" />
+      <button id="cmdSubmit" type="submit" class="px-3 sm:px-4 py-1.5 text-[11px] font-orbitron tracking-[0.2em] text-cyan-300 border border-cyan-400/60 rounded hover:bg-cyan-400/10 hover:text-cyan-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 flex-shrink-0">
+        <span class="hidden sm:inline">ENVIAR</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>
