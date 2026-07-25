@@ -94,7 +94,7 @@ export default function LeftPanel({ state, onHide, perf, systems }) {
   const dateStr = now.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }).replace('.', '');
 
   return (
-    <div className="w-[280px] flex flex-col gap-3 h-full pr-1">
+    <div className="w-full sm:w-[280px] flex flex-col gap-3 h-full pr-1">
       {/* Header */}
       <div className="flex items-center justify-between px-1">
         <span className="font-tech text-[11px] tracking-[0.3em] text-cyan-400/80">PAINÉIS</span>

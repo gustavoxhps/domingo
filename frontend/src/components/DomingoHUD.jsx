@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Send, ChevronsRight, ChevronsLeft } from 'lucide-react';
+import { Send, ChevronsRight, ChevronsLeft, X } from 'lucide-react';
 import TopBar from './hud/TopBar';
 import LeftPanel from './hud/LeftPanel';
 import LogPanel from './hud/LogPanel';
 import AgentOrb from './hud/AgentOrb';
 import { agentReplies } from '../mock';
+import useIsMobile from '../hooks/useIsMobile';
 
 const STATES = {
   BOOT: 'boot',
@@ -17,8 +18,7 @@ const STATES = {
 
 const nowStr = () => new Date().toTimeString().slice(0, 8);
 
-// Wave visualizer under the orb
-function WaveVisualizer({ state }) {
+function WaveVisualizer({ state, isMobile }) {
   const isOffline = state === 'offline';
   const isActive = state === 'listening' || state === 'thinking' || state === 'processing';
   const color = state === 'thinking' ? '#a78bfa' : state === 'processing' ? '#f59e0b' : isOffline ? '#475569' : '#22d3ee';
@@ -26,10 +26,11 @@ function WaveVisualizer({ state }) {
 
   const amp = isActive ? 22 : 6;
   const speed = state === 'processing' ? 1.4 : state === 'thinking' ? 2 : 3.5;
+  const width = isMobile ? 320 : 700;
 
   return (
-    <div className="w-full flex justify-center mt-6 pointer-events-none" style={{ opacity: isOffline ? 0.25 : 1 }}>
-      <svg viewBox="0 0 800 80" width="700" height="60" className="overflow-visible">
+    <div className="w-full flex justify-center mt-4 pointer-events-none" style={{ opacity: isOffline ? 0.25 : 1 }}>
+      <svg viewBox="0 0 800 80" width={width} height={isMobile ? 40 : 60} className="overflow-visible max-w-full">
         <defs>
           <linearGradient id="waveFade" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor={color} stopOpacity="0" />
@@ -64,9 +65,8 @@ function WaveVisualizer({ state }) {
   );
 }
 
-// Starfield background
 function Starfield() {
-  const stars = useMemo(() => Array.from({ length: 90 }).map((_, i) => ({
+  const stars = useMemo(() => Array.from({ length: 60 }).map(() => ({
     x: Math.random() * 100,
     y: Math.random() * 100,
     size: Math.random() * 1.6 + 0.4,
@@ -95,16 +95,28 @@ function Starfield() {
 }
 
 export default function DomingoHUD() {
+  const isMobile = useIsMobile(900);
   const [state, setState] = useState(STATES.IDLE);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [showLeft, setShowLeft] = useState(true);
-  const [showRight, setShowRight] = useState(true);
+  // Auto-hide side panels on mobile
+  const [showLeft, setShowLeft] = useState(!isMobile);
+  const [showRight, setShowRight] = useState(!isMobile);
   const [logs, setLogs] = useState([{ time: nowStr(), status: 'AGUARDANDO' }]);
   const [perf, setPerf] = useState({ cpu: 42, mem: 68, lat: 210 });
   const timerRef = useRef(null);
 
-  // Push a log entry whenever state changes
+  // React to viewport changes
+  useEffect(() => {
+    if (isMobile) {
+      setShowLeft(false);
+      setShowRight(false);
+    } else {
+      setShowLeft(true);
+      setShowRight(true);
+    }
+  }, [isMobile]);
+
   useEffect(() => {
     const map = {
       idle: 'AGUARDANDO',
@@ -118,7 +130,6 @@ export default function DomingoHUD() {
     }
   }, [state]);
 
-  // Live perf tick
   useEffect(() => {
     const id = setInterval(() => {
       if (state === STATES.OFFLINE) {
@@ -137,10 +148,10 @@ export default function DomingoHUD() {
   const systems = useMemo(() => {
     const off = state === STATES.OFFLINE;
     return [
-      { name: 'Rede',      status: off ? 'DESATIVADA' : 'NOMINAL',     color: off ? 'amber' : 'emerald' },
-      { name: 'IA Core',   status: off ? 'STANDBY'    : 'OPERACIONAL', color: off ? 'amber' : 'emerald' },
-      { name: 'Mem\u00f3ria',    status: off ? 'INATIVA'    : 'ATIVO',       color: off ? 'amber' : 'emerald' },
-      { name: 'Seguran\u00e7a', status: off ? 'MONITORANDO' : 'NOMINAL',   color: off ? 'amber' : 'emerald' },
+      { name: 'Rede',      status: off ? 'DESATIVADA'  : 'NOMINAL',     color: off ? 'amber' : 'emerald' },
+      { name: 'IA Core',   status: off ? 'STANDBY'     : 'OPERACIONAL', color: off ? 'amber' : 'emerald' },
+      { name: 'Mem\u00f3ria', status: off ? 'INATIVA'     : 'ATIVO',       color: off ? 'amber' : 'emerald' },
+      { name: 'Seguran\u00e7a', status: off ? 'MONITORANDO' : 'NOMINAL',    color: off ? 'amber' : 'emerald' },
     ];
   }, [state]);
 
@@ -195,6 +206,9 @@ export default function DomingoHUD() {
 
   const isOnline = state !== STATES.OFFLINE;
 
+  // Mobile panels are overlays; desktop panels are inline
+  const closePanels = () => { setShowLeft(false); setShowRight(false); };
+
   return (
     <div className="min-h-screen relative overflow-hidden text-cyan-100" style={{ background: '#020617' }}>
       <Starfield />
@@ -203,15 +217,40 @@ export default function DomingoHUD() {
 
       <TopBar isOnline={isOnline} onToggleOffline={toggleOffline} />
 
-      <main className="relative z-10 flex px-4 pb-24 gap-3" style={{ minHeight: 'calc(100vh - 64px - 72px)' }}>
-        {/* LEFT PANEL / restore tab */}
-        {showLeft ? (
-          <LeftPanel
-            state={state}
-            onHide={() => setShowLeft(false)}
-            perf={{ cpu: Math.round(perf.cpu), mem: Math.round(perf.mem), lat: Math.round(perf.lat) }}
-            systems={systems}
+      <main
+        className="relative z-10 flex px-2 sm:px-4 pb-24 gap-3"
+        style={{ minHeight: 'calc(100vh - 70px - 72px)' }}
+      >
+        {/* Mobile backdrop when a panel is open */}
+        {isMobile && (showLeft || showRight) && (
+          <div
+            onClick={closePanels}
+            className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
           />
+        )}
+
+        {/* LEFT PANEL */}
+        {showLeft ? (
+          <div className={isMobile
+            ? 'fixed left-0 top-[70px] bottom-0 z-40 w-[86vw] max-w-[320px] overflow-y-auto p-3 border-r border-cyan-500/30 bg-[#020617]/95 backdrop-blur'
+            : 'flex-shrink-0'
+          }>
+            {isMobile && (
+              <button
+                onClick={() => setShowLeft(false)}
+                className="absolute top-2 right-2 w-8 h-8 border border-cyan-500/40 rounded flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10"
+                aria-label="Fechar"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+            <LeftPanel
+              state={state}
+              onHide={() => setShowLeft(false)}
+              perf={{ cpu: Math.round(perf.cpu), mem: Math.round(perf.mem), lat: Math.round(perf.lat) }}
+              systems={systems}
+            />
+          </div>
         ) : (
           <button
             onClick={() => setShowLeft(true)}
@@ -226,14 +265,28 @@ export default function DomingoHUD() {
         )}
 
         {/* CENTER */}
-        <section className="flex-1 flex flex-col items-center justify-center relative">
-          <AgentOrb state={state} onClick={handleOrbClick} label={stateLabel} />
-          <WaveVisualizer state={state} />
+        <section className="flex-1 flex flex-col items-center justify-center relative min-w-0">
+          <AgentOrb state={state} onClick={handleOrbClick} label={stateLabel} isMobile={isMobile} />
+          <WaveVisualizer state={state} isMobile={isMobile} />
         </section>
 
-        {/* RIGHT PANEL / restore tab */}
+        {/* RIGHT PANEL */}
         {showRight ? (
-          <LogPanel logs={logs} onHide={() => setShowRight(false)} />
+          <div className={isMobile
+            ? 'fixed right-0 top-[70px] bottom-0 z-40 w-[86vw] max-w-[320px] overflow-y-auto p-3 border-l border-cyan-500/30 bg-[#020617]/95 backdrop-blur'
+            : 'flex-shrink-0'
+          }>
+            {isMobile && (
+              <button
+                onClick={() => setShowRight(false)}
+                className="absolute top-2 left-2 w-8 h-8 border border-cyan-500/40 rounded flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10"
+                aria-label="Fechar"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+            <LogPanel logs={logs} onHide={() => setShowRight(false)} />
+          </div>
         ) : (
           <button
             onClick={() => setShowRight(true)}
@@ -249,22 +302,22 @@ export default function DomingoHUD() {
       </main>
 
       {/* Bottom input */}
-      <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 right-0 z-20 px-4 pb-4 pt-2">
-        <div className="max-w-[1400px] mx-auto panel panel-corners px-4 py-2 flex items-center gap-3 relative">
+      <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 right-0 z-20 px-2 sm:px-4 pb-3 pt-2">
+        <div className="max-w-[1400px] mx-auto panel panel-corners px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 relative">
           <span className="c-tl" /><span className="c-br" />
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={state === STATES.OFFLINE}
             placeholder={state === STATES.OFFLINE ? 'SISTEMA OFFLINE...' : 'Digite se preferir...'}
-            className="flex-1 bg-transparent outline-none font-tech text-cyan-100 placeholder-cyan-500/50 tracking-wide disabled:opacity-40 py-1.5"
+            className="flex-1 min-w-0 bg-transparent outline-none font-tech text-cyan-100 placeholder-cyan-500/50 tracking-wide disabled:opacity-40 py-1.5 text-sm"
           />
           <button
             type="submit"
             disabled={state === STATES.OFFLINE || !input.trim()}
-            className="px-4 py-1.5 text-[11px] font-orbitron tracking-[0.25em] text-cyan-300 border border-cyan-400/60 rounded hover:bg-cyan-400/10 hover:text-cyan-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-3 sm:px-4 py-1.5 text-[11px] font-orbitron tracking-[0.2em] text-cyan-300 border border-cyan-400/60 rounded hover:bg-cyan-400/10 hover:text-cyan-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 flex-shrink-0"
           >
-            ENVIAR
+            <span className="hidden sm:inline">ENVIAR</span>
             <Send className="w-3 h-3" />
           </button>
         </div>

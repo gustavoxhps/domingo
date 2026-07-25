@@ -19,7 +19,7 @@ export default function LogPanel({ logs, onHide }) {
   };
 
   return (
-    <div className="w-[280px] flex flex-col gap-3 h-full pl-1">
+    <div className="w-full sm:w-[280px] flex flex-col gap-3 h-full pl-1">
       <div className="flex items-center justify-between px-1">
         <span className="font-tech text-[11px] tracking-[0.3em] text-cyan-400/80">LOG DO SISTEMA</span>
         <button

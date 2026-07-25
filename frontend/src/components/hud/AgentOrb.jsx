@@ -47,7 +47,7 @@ const buildTicks = (cx, cy, rInner, rOuter, count, startDeg = 0, sweep = 360) =>
   return arr;
 };
 
-export default function AgentOrb({ state, onClick, label }) {
+export default function AgentOrb({ state, onClick, label, isMobile = false }) {
   const isOffline = state === 'offline';
   const isListening = state === 'listening';
   const isThinking = state === 'thinking';
@@ -78,7 +78,7 @@ export default function AgentOrb({ state, onClick, label }) {
 
   return (
     <div className="relative flex flex-col items-center justify-center select-none">
-      <div className="relative w-[520px] h-[520px] flex items-center justify-center">
+      <div className={`relative flex items-center justify-center ${isMobile ? 'w-[340px] h-[340px]' : 'w-[520px] h-[520px]'}`}>
 
         {/* Radial light beams (behind everything) */}
         {!isOffline && (
@@ -272,7 +272,7 @@ export default function AgentOrb({ state, onClick, label }) {
         <button
           onClick={onClick}
           disabled={isOffline}
-          className={`relative w-[260px] h-[260px] rounded-full flex items-center justify-center ${isOffline ? 'cursor-not-allowed' : 'cursor-pointer hover:brightness-110'} transition-all`}
+          className={`relative rounded-full flex items-center justify-center ${isMobile ? 'w-[180px] h-[180px]' : 'w-[260px] h-[260px]'} ${isOffline ? 'cursor-not-allowed' : 'cursor-pointer hover:brightness-110'} transition-all`}
           style={{
             background: isOffline
               ? 'radial-gradient(circle at 50% 50%, rgba(30,41,59,0.6), rgba(3,7,17,0.95))'
