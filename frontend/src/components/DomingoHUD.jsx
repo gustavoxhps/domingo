@@ -238,7 +238,7 @@ export default function DomingoHUD() {
             {isMobile && (
               <button
                 onClick={() => setShowLeft(false)}
-                className="absolute top-2 right-2 w-8 h-8 border border-cyan-500/40 rounded flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10"
+                className="absolute top-2 right-2 w-8 h-8 border border-cyan-500/40 rounded-lg flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10"
                 aria-label="Fechar"
               >
                 <X className="w-4 h-4" />
@@ -254,7 +254,7 @@ export default function DomingoHUD() {
         ) : (
           <button
             onClick={() => setShowLeft(true)}
-            className="fixed left-0 top-1/2 -translate-y-1/2 z-30 border border-cyan-400/50 border-l-0 rounded-r-md bg-[#050c1a]/80 backdrop-blur px-2 py-4 hover:bg-cyan-400/10 transition-colors"
+            className="fixed left-0 top-1/2 -translate-y-1/2 z-30 border border-cyan-400/50 border-l-0 rounded-r-xl bg-[#050c1a]/80 backdrop-blur px-2 py-4 hover:bg-cyan-400/10 transition-colors"
             title="Mostrar painéis"
           >
             <div className="flex flex-col items-center gap-2">
@@ -279,7 +279,7 @@ export default function DomingoHUD() {
             {isMobile && (
               <button
                 onClick={() => setShowRight(false)}
-                className="absolute top-2 left-2 w-8 h-8 border border-cyan-500/40 rounded flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10"
+                className="absolute top-2 left-2 w-8 h-8 border border-cyan-500/40 rounded-lg flex items-center justify-center text-cyan-300 hover:bg-cyan-400/10"
                 aria-label="Fechar"
               >
                 <X className="w-4 h-4" />
@@ -290,7 +290,7 @@ export default function DomingoHUD() {
         ) : (
           <button
             onClick={() => setShowRight(true)}
-            className="fixed right-0 top-1/2 -translate-y-1/2 z-30 border border-cyan-400/50 border-r-0 rounded-l-md bg-[#050c1a]/80 backdrop-blur px-2 py-4 hover:bg-cyan-400/10 transition-colors"
+            className="fixed right-0 top-1/2 -translate-y-1/2 z-30 border border-cyan-400/50 border-r-0 rounded-l-xl bg-[#050c1a]/80 backdrop-blur px-2 py-4 hover:bg-cyan-400/10 transition-colors"
             title="Mostrar log"
           >
             <div className="flex flex-col items-center gap-2">
@@ -315,7 +315,7 @@ export default function DomingoHUD() {
           <button
             type="submit"
             disabled={state === STATES.OFFLINE || !input.trim()}
-            className="px-3 sm:px-4 py-1.5 text-[11px] font-orbitron tracking-[0.2em] text-cyan-300 border border-cyan-400/60 rounded hover:bg-cyan-400/10 hover:text-cyan-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 flex-shrink-0"
+            className="px-3 sm:px-4 py-1.5 text-[11px] font-orbitron tracking-[0.2em] text-cyan-300 border border-cyan-400/60 rounded-lg hover:bg-cyan-400/10 hover:text-cyan-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 flex-shrink-0"
           >
             <span className="hidden sm:inline">ENVIAR</span>
             <Send className="w-3 h-3" />

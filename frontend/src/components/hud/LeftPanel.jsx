@@ -100,7 +100,7 @@ export default function LeftPanel({ state, onHide, perf, systems }) {
         <span className="font-tech text-[11px] tracking-[0.3em] text-cyan-400/80">PAINÉIS</span>
         <button
           onClick={onHide}
-          className="px-2 py-1 border border-cyan-500/40 rounded text-[10px] font-tech tracking-widest text-cyan-300 hover:bg-cyan-400/10 flex items-center gap-1"
+          className="px-2 py-1 border border-cyan-500/40 rounded-lg text-[10px] font-tech tracking-widest text-cyan-300 hover:bg-cyan-400/10 flex items-center gap-1"
         >
           <ChevronsLeft className="w-3 h-3" />
           OCULTAR

@@ -9,7 +9,7 @@ function ToggleIconBtn({ enabled, onToggle, EnabledIcon, DisabledIcon, title }) 
     <button
       onClick={onToggle}
       title={title}
-      className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-md border transition-all flex-shrink-0"
+      className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border transition-all flex-shrink-0"
       style={{
         borderColor: `${color}80`,
         color,
@@ -36,10 +36,8 @@ export default function TopBar({ isOnline, onToggleOffline }) {
             className="px-4 sm:px-10 pt-3 sm:pt-4 pb-2 sm:pb-3 border border-cyan-400/50 border-t-0 flex items-center gap-2 sm:gap-3 relative"
             style={{
               background: 'linear-gradient(180deg, rgba(6,20,40,0.95), rgba(3,10,20,0.85))',
-              borderBottomLeftRadius: 12,
-              borderBottomRightRadius: 12,
+              borderRadius: '0 0 18px 18px',
               boxShadow: '0 8px 24px -6px rgba(34,211,238,0.35), inset 0 -1px 0 rgba(34,211,238,0.4)',
-              clipPath: 'polygon(6% 0, 94% 0, 100% 100%, 0 100%)',
             }}
           >
             <span className="font-orbitron text-lg sm:text-[26px] font-semibold tracking-widest text-cyan-300 glow-cyan leading-none">
@@ -82,7 +80,7 @@ export default function TopBar({ isOnline, onToggleOffline }) {
           title={mic ? 'Desativar microfone' : 'Ativar microfone'}
         />
         <button
-          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-md border border-cyan-400/60 text-cyan-300 hover:bg-cyan-400/10 transition-colors flex-shrink-0"
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border border-cyan-400/60 text-cyan-300 hover:bg-cyan-400/10 transition-colors flex-shrink-0"
           style={{ boxShadow: '0 0 10px rgba(34,211,238,0.5), inset 0 0 8px rgba(34,211,238,0.1)' }}
           title="Configurações"
         >
