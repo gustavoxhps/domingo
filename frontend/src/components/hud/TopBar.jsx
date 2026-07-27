@@ -52,11 +52,11 @@ export default function TopBar({ isOnline, onToggleOffline }) {
         </div>
       </div>
 
-      {/* Right controls */}
-      <div className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 flex items-center gap-2 sm:gap-3">
+      {/* Left: Online/Offline indicator */}
+      <div className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 flex items-center">
         <button
           onClick={onToggleOffline}
-          className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-orbitron tracking-widest mr-0 sm:mr-1"
+          className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-orbitron tracking-widest"
           title="Alternar Online/Offline"
         >
           <span
@@ -65,6 +65,10 @@ export default function TopBar({ isOnline, onToggleOffline }) {
           />
           <span className={`hidden sm:inline ${isOnline ? 'text-emerald-300' : 'text-red-400'}`}>{isOnline ? 'ONLINE' : 'OFFLINE'}</span>
         </button>
+      </div>
+
+      {/* Right controls */}
+      <div className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 flex items-center gap-2 sm:gap-3">
         <ToggleIconBtn
           enabled={audio}
           onToggle={() => setAudio((v) => !v)}
