@@ -21,7 +21,7 @@ function ToggleIconBtn({ enabled, onToggle, EnabledIcon, DisabledIcon, title }) 
   );
 }
 
-export default function TopBar({ isOnline, onToggleOffline }) {
+export default function TopBar({ isOnline, onToggleOffline, onOpenSettings }) {
   const [audio, setAudio] = useState(true);
   const [mic, setMic] = useState(true);
 
@@ -84,6 +84,7 @@ export default function TopBar({ isOnline, onToggleOffline }) {
           title={mic ? 'Desativar microfone' : 'Ativar microfone'}
         />
         <button
+          onClick={onOpenSettings}
           className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border border-cyan-400/60 text-cyan-300 hover:bg-cyan-400/10 transition-colors flex-shrink-0"
           style={{ boxShadow: '0 0 10px rgba(34,211,238,0.5), inset 0 0 8px rgba(34,211,238,0.1)' }}
           title="Configurações"
